@@ -1,0 +1,25 @@
+FROM ubuntu:latest
+
+
+RUN apt-get update --fix-missing
+RUN apt-get install netcat curl openssh-server net-tools iputils-ping telnet wget make nano git gcc ftp -y
+# SSH Setup
+RUN mkdir /var/run/sshd
+RUN useradd -m -d /home/pentester   pentester -s /bin/bash
+RUN echo 'pentester:letspivot' | chpasswd
+
+
+# installing vulnerable FTP serverer ... ... proftpd-1.3.3c/configure
+
+RUN mkdir /tmp/vsftp/ && git clone  https://github.com/Omaar1/vsftpd-2.3.4-infected.git /tmp/vsftp
+RUN  cd /tmp/vsftp && make
+RUN  mkdir /usr/share/empty/ &&  mkdir /var/ftp/ && useradd -d /var/ftp ftp && cp /tmp/vsftp/vsftpd /usr/local/sbin/vsftpd && cp /tmp/vsftp/vsftpd.conf /etc/vsftpd.conf && RUN echo 'ftp:ftp' | chpasswd
+
+
+# running vulnerable SSH and FTP serverer ... ...
+COPY  runner.sh runner.sh
+
+
+expose 22 21
+
+CMD ./runner.sh

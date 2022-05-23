@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+  middleware:
+    platform: linux
+    container_name: middleware
+    build:
+      dockerfile: middleware-dockerfile
+      context: .
+    ports:
+      - "22022:22"
+      - "21021:21"
+      - "6262:6200"
+    networks:
+      firstNetwork:
+        ipv4_address: 172.16.16.2
+      internalNetwork:
+        ipv4_address: 10.10.10.2
+
+
+  internalweb:
+    container_name: internalweb
+    build:
+      dockerfile: internalWeb-dockerfile
+      context: .
+    networks:
+      internalNetwork:
+        ipv4_address: 10.10.10.3
+      deepNetwork:
+        ipv4_address: 10.20.20.3
+
+  deepweb:
+    container_name: deepweb
+    build:
+      dockerfile: deepWeb-dockerfile
+      context: .
+    networks:
+      deepNetwork:
+        ipv4_address: 10.20.20.4
+
+
+networks:
+  firstNetwork:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.16.0/24"
+          gateway: "172.16.16.1"
+
+
+  internalNetwork:
+    driver: ipvlan
+    ipam:
+      config:
+        - subnet: "10.10.10.0/24"
+          gateway: "10.10.10.1"
+
+  deepNetwork:
+    driver: ipvlan
+    ipam:
+      config:
+        - subnet: "10.20.20.0/24"
+          gateway: "10.20.20.1"

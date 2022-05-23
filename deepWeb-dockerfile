@@ -1,0 +1,23 @@
+FROM ubuntu:latest
+
+RUN apt-get update --fix-missing
+RUN apt-get install netcat curl openssh-server net-tools iputils-ping telnet wget make nano git gcc ftp  libssl-dev -y
+
+
+RUN apt-get install groff-base -y
+
+# installing vulnerable Web serverer ... ... nhttpd-1.9.6 
+
+RUN mkdir /tmp/nhttpd/ && git clone  https://github.com/Omaar1/nostromo_nhttpd.git   /tmp/nhttpd
+RUN cd /tmp/nhttpd/nostromo && make && make install 
+RUN chmod 777 /var/nostromo/logs/ && cp /tmp/nhttpd/nostromo/conf/nhttpd.conf /var/nostromo/conf/nhttpd.conf && chmod 755 /tmp/nhttpd/startup.sh && sed -i 's/\r$//' /tmp/nhttpd/startup.sh 
+
+
+expose 80
+
+
+# running vulnerable Web serverer ... ...
+# CMD /tmp/nhttpd/startup.sh 
+ENTRYPOINT ["/bin/sh", "/tmp/nhttpd/startup.sh"]
+
+# CMD tail -f /dev/null
