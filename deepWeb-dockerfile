@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 
 RUN apt-get update --fix-missing
-RUN apt-get install netcat curl openssh-server net-tools iputils-ping telnet wget make nano git gcc ftp  libssl-dev -y
+RUN apt-get install netcat-openbsd curl openssh-server net-tools iputils-ping telnet wget make nano git gcc ftp  libssl-dev -y
 
 
 RUN apt-get install groff-base -y

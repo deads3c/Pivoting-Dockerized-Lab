@@ -2,7 +2,7 @@ FROM ubuntu:latest
 
 
 RUN apt-get update --fix-missing
-RUN apt-get install netcat curl openssh-server net-tools iputils-ping telnet wget make nano git gcc ftp -y
+RUN apt-get install nmap netcat-openbsd curl openssh-server net-tools iputils-ping telnet wget make nano git gcc ftp -y
 # SSH Setup
 RUN mkdir /var/run/sshd
 RUN useradd -m -d /home/pentester   pentester -s /bin/bash
